@@ -2,3 +2,6 @@ credentials.yml
 __pycache__
 scratch.py
 geckodriver.log
+geckodriver
+.DS_Store
+scratch.py
