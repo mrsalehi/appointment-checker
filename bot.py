@@ -22,9 +22,9 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-TOKEN = '1635537433:AAGeriYnG-yMZcptK6T5QnQezw8kTXDXwiU'
+TOKEN = '1631907258:AAFX3B7fPovufgFJydhEKZy8zR8LK-z4nrM'
 
 
 def send_message(dates):
     bot = telegram.Bot(token=TOKEN)
-    bot.sendMessage(chat_id = '-1001388713176', text = dates)
+    bot.sendMessage(chat_id = '-1001234181767', text = dates)

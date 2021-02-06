@@ -87,13 +87,13 @@ def main(args, driver, credentials):
         window_before = driver.window_handles[0]
 
         driver.find_element_by_name("commit").click()
-        time.sleep(1)
+        time.sleep(2)
         driver.find_element_by_link_text('Continue').click()
-        time.sleep(1)
+        time.sleep(2)
         
         if not args['re']:
             driver.find_element_by_link_text("Schedule Appointment").click()
-            time.sleep(1)
+            time.sleep(2)
             driver.find_elements_by_link_text("Schedule Appointment")[1].click()
         else:
             if args['embassy'] == 'toronto':
@@ -102,7 +102,7 @@ def main(args, driver, credentials):
                 resc_app = driver.find_elements_by_class_name("accordion-title")[2]
 
             resc_app.click()
-            time.sleep(1)
+            time.sleep(2)
             driver.find_elements_by_link_text("Reschedule Appointment")[1].click()
         
         apps_str = get_json(AVAILABLE_APPS_URLS[args['embassy']], headers = {
