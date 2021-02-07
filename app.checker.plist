@@ -13,12 +13,12 @@
     <key>ProgramArguments</key>
     <array>
     <string>/Users/mrezasalehi/.virtualenvs/base/bin/python</string>
-    <string>/Users/mrezasalehi/Desktop/personal-projects/appointment-checker/web_driver_app_checker.py</string>
+    <string>/Users/mrezasalehi/appointment-checker/web_driver_app_checker.py</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
     <key>StartInterval</key>
-    <integer>120</integer>
+    <integer>3600</integer>
     <key>StandardOutPath</key>
     <string>/tmp/app.checker.stdout</string>
     <key>StandardErrorPath</key>

@@ -20,14 +20,12 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 # parser.add_argument("--re", action="store_true")
 # parser.add_argument("--verbose", action="store_true")
 
-# 'dubai': "https://ais.usvisa-info.com/en-ae/niv/users/sign_in",
-# 
-
 LOG_IN_URLS = {
     'turkey': "https://ais.usvisa-info.com/en-tr/niv/users/sign_in",
     'armenia': "https://ais.usvisa-info.com/en-am/niv/users/sign_in",    
     'toronto': "https://ais.usvisa-info.com/en-ca/niv/users/sign_in",
-    'cyprus': "https://ais.usvisa-info.com/en-cy/niv/users/sign_in",
+    'north-cyprus': "https://ais.usvisa-info.com/en-cy/niv/users/sign_in",
+    'nicosia': "https://ais.usvisa-info.com/en-cy/niv/users/sign_in",
     'dubai': "https://ais.usvisa-info.com/en-ae/niv/users/sign_in"
 }
 
@@ -35,7 +33,8 @@ AVAILABLE_APPS_URLS = {
     'turkey': 'https://ais.usvisa-info.com/en-tr/niv/schedule/30816904/appointment/days/124.json?appointments[expedite]=false',
     'armenia': 'https://ais.usvisa-info.com/en-am/niv/schedule/31148073/appointment/days/122.json?appointments[expedite]=false',
     'toronto': 'https://ais.usvisa-info.com/en-ca/niv/schedule/32555879/appointment/days/94.json?appointments[expedite]=false',
-    'cyprus': 'https://ais.usvisa-info.com/en-cy/niv/schedule/31274313/appointment/days/117.json?appointments[expedite]=false',
+    'north-cyprus': 'https://ais.usvisa-info.com/en-cy/niv/schedule/31274313/appointment/days/117.json?appointments[expedite]=false',
+    'nicosia': "https://ais.usvisa-info.com/en-cy/niv/schedule/31274313/appointment/days/118.json?appointments[expedite]=false",
     'dubai': 'https://ais.usvisa-info.com/en-ae/niv/schedule/31270183/appointment/days/50.json?appointments[expedite]=false'
 }
 
@@ -45,8 +44,10 @@ def convert_name_to_persian(name):
         return 'تورنتو'
     elif name == 'dubai':
         return '🇦🇪 دبی'
-    elif name == 'cyprus':
-        return '🇨🇾 قبرس'
+    elif name == 'north-cyprus':
+        return '🇨🇾  (شمالی) قبرس'
+    elif name == 'nicosia':
+        return '🇨🇾  (نیکوزیا) قبرس'
     elif name == 'armenia':
         return '🇦🇲 ارمنستان'
     elif name == 'turkey':
@@ -112,6 +113,16 @@ def main(args, driver, credentials):
         human_readable_str = convert_name_to_persian(args['embassy']) + '\n'
         if apps_str:
             dates = find_app_dates(apps_str)
+            
+            if args['embassy'] == 'toronto':
+                for year in dates:
+                    for month_name in dates[year]:
+                        human_readable_str = month_name + ': ' + ', '.join([str(day) for day in dates[year][month_name]])
+                        
+                        if month_name == 'April':
+                            send_email(human_readable_str)
+
+                        return human_readable_str
 
             for year in dates:
                 human_readable_str += str(year) + ':' + '\n'
@@ -133,12 +144,15 @@ if __name__ == '__main__':
         credentials = yaml.load(file, Loader=yaml.FullLoader)
     driver = webdriver.Firefox(log_path='/tmp/geckodriver.log')
     driver.minimize_window()
-    human_readable_str = ''
-    #human_readable_str += main({'embassy': 'toronto', 're': True}, driver, credentials) + '\n\n'
-    human_readable_str += main({'embassy': 'armenia', 're': False}, driver, credentials) + '\n'
-    human_readable_str += main({'embassy': 'turkey', 're': False}, driver, credentials) + '\n'
-    human_readable_str += main({'embassy': 'dubai', 're': True}, driver, credentials) + '\n'
-    human_readable_str += main({'embassy': 'cyprus', 're': False}, driver, credentials) + '\n'
+    
+    toronto_str = main({'embassy': 'toronto', 're': True}, driver, credentials)
+    armenia_str = main({'embassy': 'armenia', 're': False}, driver, credentials)
+    turkey_str = main({'embassy': 'turkey', 're': False}, driver, credentials)
+    nicosia_str = main({'embassy': 'nicosia', 're': False}, driver, credentials)
+    dubai_embassy = main({'embassy': 'dubai', 're': True}, driver, credentials)
+    north_cyprus_str = main({'embassy': 'north-cyprus', 're': False}, driver, credentials)
+    
+    human_readable_str = '\n'.join([armenia_str, turkey_str, dubai_embassy, north_cyprus_str, nicosia_str])
     send_message(human_readable_str)
 
     driver.close()
