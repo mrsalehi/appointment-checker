@@ -33,8 +33,8 @@ AVAILABLE_APPS_URLS = {
     'turkey': 'https://ais.usvisa-info.com/en-tr/niv/schedule/30816904/appointment/days/124.json?appointments[expedite]=false',
     'armenia': 'https://ais.usvisa-info.com/en-am/niv/schedule/31148073/appointment/days/122.json?appointments[expedite]=false',
     'toronto': 'https://ais.usvisa-info.com/en-ca/niv/schedule/32555879/appointment/days/94.json?appointments[expedite]=false',
-    'north-cyprus': 'https://ais.usvisa-info.com/en-cy/niv/schedule/31274313/appointment/days/117.json?appointments[expedite]=false',
-    'nicosia': "https://ais.usvisa-info.com/en-cy/niv/schedule/31274313/appointment/days/118.json?appointments[expedite]=false",
+    'north-cyprus': 'https://ais.usvisa-info.com/en-cy/niv/schedule/31274313/appointment/days/118.json?appointments[expedite]=false',
+    'nicosia': "https://ais.usvisa-info.com/en-cy/niv/schedule/31274313/appointment/days/117.json?appointments[expedite]=false",
     'dubai': 'https://ais.usvisa-info.com/en-ae/niv/schedule/31270183/appointment/days/50.json?appointments[expedite]=false'
 }
 
@@ -152,7 +152,15 @@ if __name__ == '__main__':
     dubai_embassy = main({'embassy': 'dubai', 're': True}, driver, credentials)
     north_cyprus_str = main({'embassy': 'north-cyprus', 're': False}, driver, credentials)
     
+
     human_readable_str = '\n'.join([armenia_str, turkey_str, dubai_embassy, north_cyprus_str, nicosia_str])
-    send_message(human_readable_str)
+    
+    with open('/Users/mrezasalehi/appointment-checker/prev_msg.txt', 'r') as fptr:
+        prev_msg = fptr.read()
+    
+    if human_readable_str != prev_msg:
+        with open('/Users/mrezasalehi/appointment-checker/prev_msg.txt', 'w') as fptr:
+            fptr.write(human_readable_str)
+        send_message(human_readable_str)
 
     driver.close()
